@@ -1,15 +1,16 @@
+name: Semgrep
 on:
   pull_request: {}
   push:
     branches:
-    - main
-    - master
+      - main
+      - master
     paths:
-    - .github/workflows/semgrep.yml
-  schedule:
-  # random HH:MM to avoid a load spike on GitHub Actions at 00:00
-  - cron: 20 12 * * *
-name: Semgrep
+      - .github/workflows/semgrep.yml
+  workflow_dispatch:
+  #schedule:
+    # random HH:MM to avoid a load spike on GitHub Actions at 00:00
+    #- cron: '20 12 * * *'
 jobs:
   semgrep:
     name: Scan
@@ -18,6 +19,7 @@ jobs:
       SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
     container:
       image: returntocorp/semgrep
+    if: (github.actor != 'dependabot[bot]')
     steps:
-    - uses: actions/checkout@v3
-    - run: semgrep ci
+      - uses: actions/checkout@v3
+      - run: semgrep ci
